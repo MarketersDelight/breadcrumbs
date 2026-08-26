@@ -1,0 +1,11 @@
+{
+	"name" : "Breadcrumbs",
+	"author" : "Alex, Kolakube",
+	"version" : "1.0",
+	"description" : "Add contextual navigation trails throughout your site.",
+	"dropin_url" : "https://marketersdelight.com/dropins/breadcrumbs/",
+	"settings_url" : "admin.php?page=md_settings&tab=md_breadcrumbs",
+	"author_url" : "https://marketersdelight.com/",
+	"icon" : "dashicons-admin-links",
+	"colors" : "#f5dede, #ae2525"
+}
