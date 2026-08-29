@@ -82,7 +82,7 @@ class md_breadcrumbs extends md_api {
 		$inherited = array();
 
 		if ( $context['is_admin'] && ! $context['is_taxonomy'] ) {
-			$parent = apply_filters( 'md_post_type_settings_parent', null, $post_type );
+			$parent = md_post_type_settings_parent( $post_type );
 
 			if ( $parent && $parent !== $post_type )
 				$inherited = md_post_type_field( array( 'layout', 'breadcrumbs' ), array(), $parent );
