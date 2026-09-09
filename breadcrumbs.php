@@ -180,8 +180,18 @@ class md_breadcrumbs extends md_api {
 
 		$query_post_type = get_query_var( 'post_type' );
 
-		if ( is_array( $query_post_type ) && count( $query_post_type ) === 1 )
-			$query_post_type = reset( $query_post_type );
+		if ( is_array( $query_post_type ) ) {
+			$archive_types = array();
+
+			foreach ( $query_post_type as $type ) {
+				$object = get_post_type_object( $type );
+
+				if ( $object && $object->has_archive )
+					$archive_types[] = $type;
+			}
+
+			$query_post_type = count( $archive_types ) === 1 ? reset( $archive_types ) : '';
+		}
 
 		if ( is_string( $query_post_type ) && $query_post_type && $query_post_type !== 'post' ) {
 			$post_type = get_post_type_object( $query_post_type );
@@ -224,13 +234,13 @@ class md_breadcrumbs extends md_api {
 			if ( is_month() || is_day() )
 				$breadcrumbs['year'] = array(
 					'label' => $year,
-					'url' => get_year_link( $year )
+					'url' => md_get_date_archive_link( $year, 0, 0, array( 'post_type' => $query_post_type ) )
 				);
 
 			if ( is_day() )
 				$breadcrumbs['month'] = array(
 					'label' => wp_date( 'F', mktime( 0, 0, 0, $month, 1, $year ) ),
-					'url' => get_month_link( $year, $month )
+					'url' => md_get_date_archive_link( $year, $month, 0, array( 'post_type' => $query_post_type ) )
 				);
 
 			if ( is_year() )
