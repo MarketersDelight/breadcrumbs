@@ -41,7 +41,8 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	body:not(.is-box-style) .expanded .breadcrumbs ol { justify-content: center; }
+	body:not(.is-box-style) .expanded .breadcrumbs ol,
+	body.archive .expanded .breadcrumbs ol { justify-content: center; }
 }
 
 @media (max-width: 900px) {
