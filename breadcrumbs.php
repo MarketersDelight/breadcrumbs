@@ -3,9 +3,13 @@
  * Drop-in Name: Breadcrumbs
  * Description: Add contextual navigation trails throughout your site.
  * Author: Alex, Kolakube
- * AuthorURI: https://marketersdelight.com/
- * Slug: breadcrumbs
+ * Author URI: https://marketersdelight.com/
+ * Drop-in URI: https://marketersdelight.com/dropins/breadcrumbs/
+ * Drop-in Slug: breadcrumbs
+ * Text Domain: md-breadcrumbs
  * Version: 1.0
+ * Requires at least: 6.6
+ * Requires PHP: 7.4
  */
 
 class md_breadcrumbs extends md_api {
