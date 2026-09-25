@@ -1,4 +1,4 @@
-<nav class="breadcrumbs" aria-label="<?php echo esc_attr__( 'Breadcrumbs', 'md-breadcrumbs' ); ?>">
+<nav class="breadcrumbs<?php echo $in_cover ? ' inner' : ''; ?>" aria-label="<?php echo esc_attr__( 'Breadcrumbs', 'md-breadcrumbs' ); ?>">
 	<ol>
 		<?php
 		$current = count( $breadcrumbs ) - 1;

@@ -44,6 +44,10 @@ class md_breadcrumbs extends md_api {
 					'simple_link' => array(
 						'type' => 'checkbox',
 						'options' => array( 'enable' )
+					),
+					'force_below' => array(
+						'type' => 'checkbox',
+						'options' => array( 'enable' )
 					)
 				)
 			)
@@ -131,7 +135,8 @@ class md_breadcrumbs extends md_api {
 	 */
 
 	public function template() {
-		add_action( 'md_hook_content', array( $this, 'render' ) );
+		add_action( 'md_hook_page_title_top', array( $this, 'html_in_cover' ) );
+		add_action( 'md_hook_content', array( $this, 'html' ) );
 	}
 
 	/**
@@ -150,12 +155,42 @@ class md_breadcrumbs extends md_api {
 	}
 
 	/**
+	 * A Page Title cover never has anything else anchored above its
+	 * headline (unlike a single post, which can carry a category tag
+	 * there), so an active cover is free real estate. Move the trail
+	 * inside it instead of stacking below, unless turned off globally.
+	 *
+	 * @since 1.0
+	 */
+
+	public function in_cover() {
+		if ( is_singular() || is_404() )
+			return false;
+
+		return md_has_header_cover( 'page' ) && ! md_setting( array( 'breadcrumbs', 'force_below', 'enable' ) );
+	}
+
+	/**
+	 * Render inside the Page Title cover, at its very top.
+	 *
+	 * @since 1.0
+	 */
+
+	public function html_in_cover() {
+		if ( $this->in_cover() )
+			$this->html( true );
+	}
+
+	/**
 	 * Render the resolved trail through the overrideable HTML template.
 	 *
 	 * @since 1.0
 	 */
 
-	public function render() {
+	public function html( $in_cover = false ) {
+		if ( ! $in_cover && $this->in_cover() )
+			return;
+
 		if ( ! $this->has() )
 			return;
 

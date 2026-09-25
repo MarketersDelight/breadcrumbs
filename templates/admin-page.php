@@ -22,6 +22,15 @@
             ) ); ?>
         </div>
 
+        <div class="md-sep-micro">
+            <?php $this->fields->field( 'force_below', array(
+                'type' => 'checkbox',
+                'options' => array(
+                    'enable' => __( 'Always keep Breadcrumbs below the title, never inside a Page Cover', 'md-breadcrumbs' )
+                )
+            ) ); ?>
+        </div>
+
     </div>
 
 </div>
