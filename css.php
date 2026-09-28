@@ -6,7 +6,6 @@
 	margin-block-end: var(--md-half);
 }
 
-.expanded .content-wrap.builder > .breadcrumbs,
 .expanded :is(.plain-style, .border-style) .breadcrumbs {
 	margin-inline: auto;
 	max-width: var(--md-loop-content-width);
