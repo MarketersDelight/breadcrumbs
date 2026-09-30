@@ -29,7 +29,7 @@ A [Marketers Delight](https://marketersdelight.com/) drop-in that adds a breadcr
 ## Requirements
 
 - Marketers Delight 6.0 or later
-- WordPress 6.6 or later
+- WordPress 6.2 or later
 - PHP 7.4 or later
 
 ## Install

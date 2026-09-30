@@ -1,8 +1,8 @@
 <style type="text/css">
 
 .breadcrumbs {
-	font-size: var(--md-font-size-sm);
-	line-height: var(--md-line-height-sm);
+	font-size: var(--md-font-size-small);
+	line-height: var(--md-line-height-small);
 	margin-block-end: var(--md-half);
 }
 

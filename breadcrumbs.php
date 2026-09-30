@@ -8,7 +8,7 @@
  * Drop-in Slug: breadcrumbs
  * Text Domain: md-breadcrumbs
  * Version: 1.0
- * Requires at least: 6.6
+ * Requires at least: 6.2
  * Requires PHP: 7.4
  */
 
@@ -148,8 +148,10 @@ class md_breadcrumbs extends md_api {
 	public function has() {
 		$settings = md_module( array( 'layout', 'breadcrumbs' ), null );
 
-		if ( is_null( $settings ) )
-			$settings = md_post_type_field( array( 'layout', 'breadcrumbs' ), array() );
+		if ( is_null( $settings ) ) {
+			$post_type = is_author() ? 'author' : null;
+			$settings = md_post_type_field( array( 'layout', 'breadcrumbs' ), array(), $post_type );
+		}
 
 		return ! empty( $settings['add'] ) && empty( $settings['remove'] );
 	}

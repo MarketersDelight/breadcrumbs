@@ -50,6 +50,37 @@ class BreadcrumbsTest extends MD_InheritanceTestCase {
 		$this->assertFalse( $this->breadcrumbs()->has() );
 	}
 
+	public function test_author_visibility_does_not_fall_back_to_blog_settings() {
+		md_test_set_query( array(
+			'is_author' => true,
+			'post_type' => 'post'
+		) );
+		md_test_set_option( 'marketers_delight', array(
+			'post' => array(
+				'layout' => array(
+					'breadcrumbs' => array( 'add' => true )
+				)
+			)
+		) );
+
+		$this->assertFalse( $this->breadcrumbs()->has() );
+
+		md_test_set_option( 'marketers_delight', array(
+			'author' => array(
+				'layout' => array(
+					'breadcrumbs' => array( 'add' => true )
+				)
+			),
+			'post' => array(
+				'layout' => array(
+					'breadcrumbs' => array( 'add' => true )
+				)
+			)
+		) );
+
+		$this->assertTrue( $this->breadcrumbs()->has() );
+	}
+
 	public function test_enabled_top_level_page_is_not_silently_excluded() {
 		md_test_set_query( array(
 			'is_page' => true,
