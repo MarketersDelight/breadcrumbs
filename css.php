@@ -4,6 +4,8 @@
 	font-size: var(--md-font-size-small);
 	line-height: var(--md-line-height-small);
 	margin-block-end: var(--md-half);
+	min-width: 0;
+	width: 100%;
 }
 
 .expanded :is(.plain-style, .border-style) .breadcrumbs {
