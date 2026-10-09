@@ -135,7 +135,8 @@ class md_breadcrumbs extends md_api {
 	 */
 
 	public function template() {
-		add_action( 'md_hook_page_title_top', array( $this, 'html_in_cover' ) );
+		add_action( 'md_hook_page_title_inner_top', array( $this, 'html_in_cover' ) );
+		add_action( 'md_hook_post_title_inner_top', array( $this, 'html_in_cover' ) );
 		add_action( 'md_hook_content', array( $this, 'html' ) );
 	}
 
@@ -161,15 +162,18 @@ class md_breadcrumbs extends md_api {
 	 * headline (unlike a single post, which can carry a category tag
 	 * there), so an active cover is free real estate. Move the trail
 	 * inside it instead of stacking below, unless turned off globally.
+	 * Drop-ins can opt a single post's cover in with md_breadcrumbs_in_cover.
 	 *
 	 * @since 1.0
 	 */
 
 	public function in_cover() {
 		if ( is_singular() || is_404() )
-			return false;
+			$in_cover = false;
+		else
+			$in_cover = md_has_header_cover( 'page' ) && ! md_setting( array( 'breadcrumbs', 'force_below', 'enable' ) );
 
-		return md_has_header_cover( 'page' ) && ! md_setting( array( 'breadcrumbs', 'force_below', 'enable' ) );
+		return (bool) apply_filters( 'md_breadcrumbs_in_cover', $in_cover );
 	}
 
 	/**
