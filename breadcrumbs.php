@@ -341,22 +341,7 @@ class md_breadcrumbs extends md_api {
 					}
 				}
 
-				foreach ( array_reverse( get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' ) ) as $ancestor_id ) {
-					$ancestor = get_term( $ancestor_id, $term->taxonomy );
-
-					if ( ! $ancestor || is_wp_error( $ancestor ) )
-						continue;
-
-					$breadcrumbs["term-{$ancestor_id}"] = array(
-						'label' => $ancestor->name,
-						'url' => get_term_link( $ancestor )
-					);
-				}
-
-				$breadcrumbs['term'] = array(
-					'label' => $term->name,
-					'url' => ''
-				);
+				$breadcrumbs = array_merge( $breadcrumbs, $this->term_trail( $term ) );
 			}
 		}
 		elseif ( is_home() ) {
@@ -391,22 +376,7 @@ class md_breadcrumbs extends md_api {
 				if ( ! empty( $categories ) ) {
 					$category = reset( $categories );
 
-					foreach ( array_reverse( get_ancestors( $category->term_id, 'category', 'taxonomy' ) ) as $ancestor_id ) {
-						$ancestor = get_term( $ancestor_id, 'category' );
-
-						if ( ! $ancestor || is_wp_error( $ancestor ) )
-							continue;
-
-						$breadcrumbs["category-{$ancestor_id}"] = array(
-							'label' => $ancestor->name,
-							'url' => get_term_link( $ancestor )
-						);
-					}
-
-					$breadcrumbs['category'] = array(
-						'label' => $category->name,
-						'url' => get_term_link( $category )
-					);
+					$breadcrumbs = array_merge( $breadcrumbs, $this->term_trail( $category, true, 'category-', 'category' ) );
 				}
 			}
 			elseif ( $post_type_name !== 'page' && $post_type && $post_type->has_archive )
@@ -414,6 +384,9 @@ class md_breadcrumbs extends md_api {
 					'label' => $post_type->labels->name,
 					'url' => get_post_type_archive_link( $post_type_name )
 				);
+
+			if ( ! in_array( $post_type_name, array( 'post', 'page' ), true ) )
+				$breadcrumbs = array_merge( $breadcrumbs, $this->terms( $post_id, $post_type_name ) );
 
 			if ( $post_type_name === 'page' || ( $post_type && $post_type->hierarchical ) )
 				foreach ( array_reverse( get_post_ancestors( $post_id ) ) as $ancestor_id ) {
@@ -455,9 +428,91 @@ class md_breadcrumbs extends md_api {
 			);
 		}
 
-		$breadcrumbs = apply_filters( 'md_filter_breadcrumbs', $breadcrumbs );
+		return $this->simple_link_link( apply_filters( 'md_filter_breadcrumbs', $breadcrumbs ) );
+	}
 
-		return $this->simple_link_link( $breadcrumbs );
+	/**
+	 * Resolve a custom post's trail only when its hierarchical taxonomy is clear.
+	 * If assigned terms do not share one ancestor path, MD does not guess.
+	 *
+	 * @since 1.0
+	 */
+
+	protected function terms( $post_id, $post_type_name ) {
+		$candidates = $own = array();
+
+		foreach ( get_object_taxonomies( $post_type_name ) as $name ) {
+			$taxonomy = get_taxonomy( $name );
+
+			if ( ! $taxonomy || empty( $taxonomy->public ) || empty( $taxonomy->hierarchical ) )
+				continue;
+
+			$candidates[] = $name;
+
+			if ( count( (array) $taxonomy->object_type ) === 1 )
+				$own[] = $name;
+		}
+
+		$taxonomy = '';
+
+		if ( count( $own ) === 1 )
+			$taxonomy = $own[0];
+		elseif ( ! $own && count( $candidates ) === 1 )
+			$taxonomy = $candidates[0];
+
+		if ( ! $taxonomy )
+			return array();
+
+		$terms = wp_get_post_terms( $post_id, $taxonomy );
+		$deepest = null;
+
+		if ( empty( $terms ) || is_wp_error( $terms ) )
+			return array();
+
+		foreach ( $terms as $term ) {
+			$ancestors = get_ancestors( $term->term_id, $taxonomy, 'taxonomy' );
+
+			if ( $deepest === null || in_array( $deepest->term_id, $ancestors, true ) )
+				$deepest = $term;
+			elseif ( ! in_array( $term->term_id, get_ancestors( $deepest->term_id, $taxonomy, 'taxonomy' ), true ) )
+				return array();
+		}
+
+		$deepest = get_term( $deepest->term_id, $taxonomy );
+
+		if ( ! $deepest || is_wp_error( $deepest ) )
+			return array();
+
+		return $this->term_trail( $deepest, true, 'term-', "term-{$deepest->term_id}" );
+	}
+
+	/**
+	 * Build an ancestor trail for a known term.
+	 *
+	 * @since 1.0
+	 */
+
+	protected function term_trail( $term, $link_current = false, $key_prefix = 'term-', $current_key = 'term' ) {
+		$crumbs = array();
+
+		foreach ( array_reverse( get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' ) ) as $term_id ) {
+			$ancestor = get_term( $term_id, $term->taxonomy );
+
+			if ( ! $ancestor || is_wp_error( $ancestor ) )
+				continue;
+
+			$crumbs["{$key_prefix}{$term_id}"] = array(
+				'label' => $ancestor->name,
+				'url' => get_term_link( $ancestor )
+			);
+		}
+
+		$crumbs[$current_key] = array(
+			'label' => $term->name,
+			'url' => $link_current ? get_term_link( $term ) : ''
+		);
+
+		return $crumbs;
 	}
 
 	/**

@@ -149,6 +149,82 @@ class BreadcrumbsTest extends MD_InheritanceTestCase {
 		$this->assertSame( 'A clipped quote title', $breadcrumbs['current']['label'] );
 	}
 
+	protected function library_entry() {
+		md_test_set_query( array(
+			'is_singular' => true,
+			'queried_object_id' => 1,
+			'post_type' => 'download'
+		) );
+		md_test_set_post_type_object( 'download', 'Library' );
+		md_test_set_title( 1, 'Bookshelf' );
+		md_test_set_taxonomy( 'download_category', true, array( 'download' ), true );
+		md_test_set_taxonomy( 'download_tag', true, array( 'download' ) );
+		md_test_set_taxonomy( 'dropin_category', true, array( 'download', 'docs', 'stream' ), true );
+		md_test_set_object_taxonomies( 'download', array( 'download_category', 'download_tag', 'dropin_category' ) );
+		md_test_set_term( 400, 'dropin_category', 'Bookshelf Drop-in' );
+		md_test_set_post_terms( 1, 'dropin_category', array( 400 ) );
+		md_test_set_term( 30, 'download_category', 'Drop-ins' );
+		md_test_set_term( 196, 'download_category', 'Content' );
+		md_test_set_ancestors( 196, 'download_category', array( 30 ) );
+	}
+
+	public function test_custom_post_builds_ancestor_trail_for_its_unique_taxonomy() {
+		$this->library_entry();
+		md_test_set_post_terms( 1, 'download_category', array( 30, 196 ) );
+
+		$breadcrumbs = $this->breadcrumbs()->get();
+
+		$this->assertSame( array( 'home', 'archive', 'term-30', 'term-196', 'current' ), array_keys( $breadcrumbs ) );
+		$this->assertSame( 'Library', $breadcrumbs['archive']['label'] );
+		$this->assertSame( 'Drop-ins', $breadcrumbs['term-30']['label'] );
+		$this->assertSame( 'Content', $breadcrumbs['term-196']['label'] );
+		$this->assertSame( 'Bookshelf', $breadcrumbs['current']['label'] );
+	}
+
+	public function test_custom_post_without_terms_keeps_the_archive_trail() {
+		$this->library_entry();
+
+		$this->assertSame( array( 'home', 'archive', 'current' ), array_keys( $this->breadcrumbs()->get() ) );
+	}
+
+	public function test_custom_post_uses_its_unique_taxonomy_over_a_shared_one() {
+		$this->library_entry();
+		md_test_set_post_terms( 1, 'download_category', array( 196 ) );
+
+		$breadcrumbs = $this->breadcrumbs()->get();
+
+		$this->assertArrayHasKey( 'term-196', $breadcrumbs );
+		$this->assertArrayNotHasKey( 'term-400', $breadcrumbs );
+	}
+
+	public function test_custom_post_with_several_own_hierarchical_taxonomies_is_not_guessed() {
+		$this->library_entry();
+		md_test_set_taxonomy( 'download_collection', true, array( 'download' ), true );
+		md_test_set_object_taxonomies( 'download', array( 'download_category', 'download_collection' ) );
+		md_test_set_post_terms( 1, 'download_category', array( 196 ) );
+
+		$this->assertSame( array( 'home', 'archive', 'current' ), array_keys( $this->breadcrumbs()->get() ) );
+	}
+
+	public function test_custom_post_with_unrelated_terms_does_not_guess_a_trail() {
+		$this->library_entry();
+		md_test_set_term( 197, 'download_category', 'Extensions' );
+		md_test_set_ancestors( 197, 'download_category', array( 31 ) );
+		md_test_set_post_terms( 1, 'download_category', array( 196, 197 ) );
+
+		$this->assertSame( array( 'home', 'archive', 'current' ), array_keys( $this->breadcrumbs()->get() ) );
+	}
+
+	public function test_compact_link_mode_ignores_the_term_trail() {
+		$this->library_entry();
+		md_test_set_post_terms( 1, 'download_category', array( 196 ) );
+		md_test_set_option( 'marketers_delight', array(
+			'breadcrumbs' => array( 'simple_link' => array( 'enable' => true ) )
+		) );
+
+		$this->assertSame( array( 'archive-link' ), array_keys( $this->breadcrumbs()->get() ) );
+	}
+
 	public function test_home_label_uses_the_global_breadcrumb_setting() {
 		md_test_set_query( array(
 			'is_post_type_archive' => true,
