@@ -7,7 +7,7 @@
  * Drop-in URI: https://marketersdelight.com/dropins/breadcrumbs/
  * Drop-in Slug: breadcrumbs
  * Text Domain: md-breadcrumbs
- * Version: 1.0
+ * Version: 1.0.1
  * Requires at least: 6.2
  * Requires PHP: 7.4
  */
