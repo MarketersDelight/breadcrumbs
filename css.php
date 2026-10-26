@@ -49,9 +49,8 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	body:not(.is-box-style) .expanded .breadcrumbs:not(.image-inline *) ol,
-	body:is(.archive, .blog) .expanded .breadcrumbs:not(.image-inline *) ol,
-	.page-title.wide:not(.image-inline) .breadcrumbs ol { justify-content: center; }
+	.expanded .breadcrumbs:has(+ .wide:not(.image-inline, .has-aside)) ol,
+	.expanded .wide:not(.image-inline, .has-aside) .breadcrumbs ol { justify-content: center; }
 }
 
 @media (max-width: 900px) {
