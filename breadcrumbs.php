@@ -10,6 +10,7 @@
  * Version: 1.0.2
  * Requires at least: 6.2
  * Requires PHP: 7.4
+ * Requires MD: 6.0
  */
 
 class md_breadcrumbs extends md_api {
