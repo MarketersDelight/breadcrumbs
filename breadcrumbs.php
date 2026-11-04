@@ -41,14 +41,21 @@ class md_breadcrumbs extends md_api {
 			'admin_page' => array(
 				'name' => __( 'Breadcrumbs', 'md-breadcrumbs' ),
 				'fields' => array(
-					'home_label' => array( 'type' => 'text' ),
+					'home_label' => array(
+						'type' => 'text',
+						'label' => __( 'Home text', 'md-breadcrumbs' )
+					),
 					'simple_link' => array(
 						'type' => 'checkbox',
-						'options' => array( 'enable' )
+						'options' => array(
+							'enable' => __( 'Show a simple Go back link on single posts <b>← All {post type}</b>', 'md-breadcrumbs' )
+						)
 					),
 					'force_below' => array(
 						'type' => 'checkbox',
-						'options' => array( 'enable' )
+						'options' => array(
+							'enable' => __( 'Always keep Breadcrumbs below the title, never inside a Page Cover', 'md-breadcrumbs' )
+						)
 					)
 				)
 			)
@@ -112,7 +119,6 @@ class md_breadcrumbs extends md_api {
 		);
 
 		$fields->field( 'breadcrumbs', array(
-			'type' => 'checkbox',
 			'options' => $options
 		) );
 	}
