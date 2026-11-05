@@ -10,7 +10,10 @@
  * Version: 1.0.2
  * Requires at least: 6.2
  * Requires PHP: 7.4
- * Requires MD: 6.0
+ * Requires MD: 6.2
+ * Icon: dashicons-admin-links
+ * Colors: #f5dede, #ae2525
+ * Settings URL: admin.php?page=md_settings&tab=md_breadcrumbs
  */
 
 class md_breadcrumbs extends md_api {
