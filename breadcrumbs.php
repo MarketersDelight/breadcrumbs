@@ -168,11 +168,9 @@ class md_breadcrumbs extends md_api {
 	}
 
 	/**
-	 * A Page Title cover never has anything else anchored above its
-	 * headline (unlike a single post, which can carry a category tag
-	 * there), so an active cover is free real estate. Move the trail
-	 * inside it instead of stacking below, unless turned off globally.
-	 * Drop-ins can opt a single post's cover in with md_breadcrumbs_in_cover.
+	 * Move the trail inside an active Page Title cover, which has nothing else
+	 * anchored above its headline. Drop-ins can opt in a single post's cover with
+	 * md_breadcrumbs_in_cover.
 	 *
 	 * @since 1.0
 	 */
