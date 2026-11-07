@@ -1,6 +1,6 @@
 <div class="md-widget md-toggle mb-single">
 
-    <h3 class="md-widget-title"><?php echo function_exists( 'md_get_dropin_icon' ) ? md_get_dropin_icon( 'breadcrumbs', 'small' ) : ''; ?><?php echo __( 'Breadcrumbs', 'md-breadcrumbs' ); ?></h3>
+    <h3 class="md-widget-title"><?php echo function_exists( 'md_get_dropin_icon' ) ? md_get_dropin_icon( 'breadcrumbs', 'small' ) : ''; ?><span><?php echo __( 'Breadcrumbs', 'md-breadcrumbs' ); ?><span class="md-widget-description"><?php echo __( 'Home label, link style and placement', 'md-breadcrumbs' ); ?></span></span></h3>
 
     <div class="md-widget-item">
 
